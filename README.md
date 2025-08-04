@@ -1,7 +1,3 @@
-Here's a `README.md` content tailored to your uploaded notebook **`MnistDigitClassifier.ipynb`**, which builds and trains a CNN to classify handwritten digits from the MNIST dataset:
-
----
-
 ## 🧠 MNIST Digit Classifier 🖋️
 
 This project builds a deep learning model to recognize handwritten digits (0–9) from the **MNIST dataset** using a **Convolutional Neural Network (CNN)** built with **TensorFlow/Keras**.
