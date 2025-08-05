@@ -1,86 +1,119 @@
 ## 🧠 MNIST Digit Classifier 🖋️
 
-This project builds a deep learning model to recognize handwritten digits (0–9) from the **MNIST dataset** using a **Convolutional Neural Network (CNN)** built with **TensorFlow/Keras**.
+This project implements a simple feedforward neural network (Multi-Layer Perceptron) to recognize handwritten digits (0–9) from the **MNIST dataset** using **TensorFlow/Keras**.
 
 ---
 
 ### 📌 Problem Statement
 
-The MNIST dataset contains 70,000 grayscale images of handwritten digits (28×28 pixels).
-The task is to build a machine learning model that **accurately classifies digits from 0 to 9**.
+The MNIST dataset consists of **70,000 grayscale images** (28×28 pixels) of handwritten digits ranging from 0 to 9.
+The goal is to build a neural network that can accurately classify these digits.
 
 ---
 
 ### 🚀 Solution Overview
 
-The approach includes:
+#### 1. **Data Loading & Preprocessing**
 
-1. **Data Preprocessing**
+* Load the MNIST dataset using `tensorflow.keras.datasets.mnist`.
+* Normalize pixel values to the range **\[0, 1]** (divide by 255).
+* Split into training and test sets.
 
-   * Loading MNIST using `tensorflow.keras.datasets`
-   * Normalizing pixel values to \[0, 1]
-   * One-hot encoding target labels
+#### 2. **Model Architecture** – Multi-Layer Perceptron (MLP)
 
-2. **Model Architecture**
-   A CNN was chosen due to its effectiveness in image classification tasks:
+A simple sequential model with fully connected layers:
 
-   * `Conv2D → ReLU → MaxPooling`
-   * `Conv2D → ReLU → MaxPooling`
-   * Flatten → Dense → Dropout → Output Dense Layer (Softmax)
+```python
+model = Sequential()
+model.add(Flatten(input_shape=(28, 28)))            # Flatten 2D image to 1D vector
+model.add(Dense(128, activation='relu'))            # Hidden layer with 128 neurons
+model.add(Dense(32, activation='relu'))             # Hidden layer with 32 neurons
+model.add(Dense(10, activation='softmax'))          # Output layer for 10 classes
+```
 
-   Layers Summary:
-
-   ```text
-   Input: (28, 28, 1)
-   Conv2D(32 filters, 3x3) + ReLU
-   MaxPooling2D(2x2)
-   Conv2D(64 filters, 3x3) + ReLU
-   MaxPooling2D(2x2)
-   Flatten
-   Dense(128) + ReLU
-   Dropout(0.5)
-   Dense(10, activation='softmax')
-   ```
-
-3. **Training**
-
-   * Optimizer: `Adam`
-   * Loss: `categorical_crossentropy`
-   * Metrics: `accuracy`
-   * Trained for **10 epochs** with batch size 128
-
-4. **Evaluation**
-
-   * Model achieved **over 98% test accuracy**
-   * Visualized prediction results for random test images
-   * Confusion matrix and classification report used for deeper insight
+* **Flatten**: Transforms 28×28 pixels into a 784-length vector.
+* **Dense(128, relu)**: Learns intermediate features.
+* **Dense(32, relu)**: Further abstraction.
+* **Dense(10, softmax)**: Outputs class probabilities for digits 0–9.
 
 ---
 
-### 📈 Achieved Results
+#### 3. **Compilation & Training**
 
-* **Test Accuracy**: **\~98.7%**
-* Fast convergence and good generalization
-* Correctly classifies most test images with minimal overfitting
+* **Compiler settings**:
+
+  * Optimizer: `Adam`
+  * Loss: `sparse_categorical_crossentropy`
+  * Metrics: `accuracy`
+
+* **Training**:
+
+  * Epochs: **100**
+  * Validation split: **20%** of training data
+
+Example:
+
+```python
+model.compile(
+    loss='sparse_categorical_crossentropy',
+    optimizer='Adam',
+    metrics=['accuracy']
+)
+history = model.fit(
+    X_train, y_train,
+    epochs=100,
+    validation_split=0.2
+)
+```
 
 ---
 
-Main packages used:
+### ✅ Results
 
-* `tensorflow`
-* `numpy`
-* `matplotlib`
-* `scikit-learn`
+* **Test Accuracy**: \~97.47%
+  (computed using `accuracy_score` on `y_test` vs. `y_pred`)
 
----
+* **Training Dynamics**:
 
-### 📊 Example Predictions
-
-The notebook visualizes a few predictions using `matplotlib`, showing the model's output on sample test images.
+  * Training accuracy quickly approaches 99.9%.
+  * Validation accuracy stabilizes around 97.5%.
 
 ---
 
-### 📁 Files
+### 📊 Loss Curves
 
-* `MnistDigitClassifier.ipynb` – Main notebook
-* `README.md` – You're reading it :)
+Training and validation loss curves can be visualized with `matplotlib`:
+
+```python
+plt.plot(history.history['loss'], label='Train Loss')
+plt.plot(history.history['val_loss'], label='Val Loss')
+plt.legend()
+plt.show()
+```
+
+---
+
+### 📁 Project Structure
+
+```
+├── README.md                      # This file
+└── MnistDigitClassifier.ipynb     # Jupyter Notebook
+```
+
+---
+
+### 📦 Dependencies
+
+Install required packages:
+
+```bash
+pip install tensorflow matplotlib numpy scikit-learn
+```
+
+---
+
+### 💡 Future Improvements
+
+* Experiment with deeper or wider MLP architectures.
+* Incorporate Dropout or Batch Normalization to reduce overfitting.
+* Compare performance with Convolutional Neural Networks (CNNs).
